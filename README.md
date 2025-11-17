@@ -1,6 +1,9 @@
 # AIVoice
 
+
 A local-first AI voice assistant that enables natural voice conversations with AI through speech-to-text, LLM processing, and text-to-speech synthesis. Built with FastAPI and featuring real-time WebSocket communication for seamless voice interactions.
+**Note**
+Will upload the files soon, the basic workflow is running.
 
 ## Description
 
@@ -46,7 +49,7 @@ AIVoice is a full-stack voice assistant application that processes voice input t
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/AIVoice.git
+git clone https://github.com/manxlr/AIVoice.git
 cd AIVoice
 ```
 
@@ -278,7 +281,7 @@ uvicorn app.main:app --reload
 
 ## License
 
-[Specify your license here]
+Open-source, use wherever.
 
 ## Contributing
 

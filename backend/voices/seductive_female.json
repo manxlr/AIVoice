@@ -1,0 +1,13 @@
+{
+  "id": "seductive_female",
+  "label": "Seductive Female",
+  "engine": "piper",
+  "model_filename": "en_US-lessac-high.onnx",
+  "description": "Smooth and expressive delivery with a lower cadence.",
+  "synthesis": {
+    "length_scale": 1.15,
+    "noise_scale": 0.6,
+    "volume": 0.95
+  }
+}
+

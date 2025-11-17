@@ -1,0 +1,13 @@
+{
+  "id": "deep_male",
+  "label": "Deep Male",
+  "engine": "piper",
+  "model_filename": "en_US-joe-medium.onnx",
+  "description": "Low, resonant male voice for authoritative delivery.",
+  "synthesis": {
+    "length_scale": 0.95,
+    "noise_scale": 0.65,
+    "volume": 1.05
+  }
+}
+

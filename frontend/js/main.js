@@ -198,8 +198,10 @@ window.copyCode = function(button) {
     return;
   }
   
-  const fullText = codeBlock.textContent;
-  console.log('Copying text:', fullText.substring(0, 50) + '...');
+  // Get all text content including line breaks
+  const fullText = codeBlock.innerText || codeBlock.textContent;
+  console.log('Copying text length:', fullText.length);
+  console.log('First 100 chars:', fullText.substring(0, 100) + '...');
   
   navigator.clipboard.writeText(fullText).then(() => {
     showCopyFeedback(button, 'Copied!');
@@ -338,7 +340,10 @@ socket.on("json", (payload) => {
       transcriptionEl.textContent = payload.text || "[unrecognized]";
       if (payload.text) {
         console.log('Appending transcription to chat');
-        appendMessage(payload.text, "user");
+        // Force the append to ensure it works
+        setTimeout(() => {
+          appendMessage(payload.text, "user");
+        }, 100);
       }
       break;
     case "assistant_text":

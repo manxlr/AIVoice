@@ -175,3 +175,6 @@ AI_Models/
 # Temporary files
 tmp/
 temp/
+
+# Qoder Agent Files
+.qoder/

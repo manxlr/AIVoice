@@ -80,10 +80,26 @@
 }
 
 .light-mode code,
-.light-mode pre {
-  background-color: #f3f4f6;
+.light-mode pre,
+.light-mode .code-block,
+.light-mode .code-section {
+  background-color: #f9fafb;
   color: black;
   border-color: #d1d5db;
+}
+
+.light-mode code {
+  background-color: #f3f4f6;
+}
+
+.light-mode ::selection {
+  background-color: #bfdbfe;
+  color: black;
+}
+
+.light-mode .code-block ::selection {
+  background-color: #93c5fd;
+  color: black;
 }
 
 body {

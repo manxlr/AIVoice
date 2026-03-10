@@ -184,7 +184,7 @@ function escapeHtml(text) {
 // Global copy state
 let copiedTimeout = null;
 
-function copyCode(button) {
+window.copyCode = function(button) {
   console.log('Copy button clicked');
   const codeSection = button.closest('.code-section');
   console.log('Code section found:', codeSection);
@@ -515,10 +515,10 @@ settingsModal?.addEventListener("click", (e) => {
 function loadVersionInfo() {
   // In a real app, this would come from a config file or API
   const version = '1.2.0';
-  const buildDate = new Date().toLocaleDateString();
+  const currentDate = new Date().toLocaleDateString();
   
   if (appVersion) appVersion.textContent = version;
-  if (buildDate) buildDate.textContent = buildDate;
+  if (buildDate) buildDate.textContent = currentDate;
 }
 
 // Settings functions

@@ -10,7 +10,7 @@ const statusEl = document.getElementById("statusText");
 const pttButton = document.getElementById("pttButton");
 const textForm = document.getElementById("textForm");
 const textInput = document.getElementById("textInput");
-const settingsBtn = document.getElementById("settingsBtn");
+// UI Elements
 const settingsModal = document.getElementById("settingsModal");
 const closeSettings = document.getElementById("closeSettings");
 const saveSettings = document.getElementById("saveSettings");
@@ -18,6 +18,16 @@ const restoreDefaults = document.getElementById("restoreDefaults");
 const resetAll = document.getElementById("resetAll");
 const testBackend = document.getElementById("testBackend");
 const testLlm = document.getElementById("testLlm");
+
+// New UI Elements
+const toggleVoicePanel = document.getElementById("toggleVoicePanel");
+const voicePanel = document.getElementById("voicePanel");
+const voicePanelContent = document.getElementById("voicePanelContent");
+const openFullSettings = document.getElementById("openFullSettings");
+const testBackendSmall = document.getElementById("testBackendSmall");
+const testLlmSmall = document.getElementById("testLlmSmall");
+const backendUrlSmall = document.getElementById("backendUrlSmall");
+const llmApiUrlSmall = document.getElementById("llmApiUrlSmall");
 const voiceListEl = document.getElementById("voiceList");
 
 const playback = new AudioPlayback();
@@ -353,10 +363,30 @@ textForm.addEventListener("submit", (evt) => {
   textInput.value = "";
 });
 
-settingsBtn?.addEventListener("click", () => {
+openFullSettings?.addEventListener("click", () => {
   loadSettings();
   settingsModal?.classList.remove("hidden");
 });
+
+// Voice Panel Toggle
+let isVoicePanelMinimized = false;
+
+toggleVoicePanel?.addEventListener("click", () => {
+  isVoicePanelMinimized = !isVoicePanelMinimized;
+  if (isVoicePanelMinimized) {
+    voicePanel.classList.add("lg:w-12");
+    voicePanelContent.classList.add("hidden");
+    toggleVoicePanel.textContent = "→";
+  } else {
+    voicePanel.classList.remove("lg:w-12");
+    voicePanelContent.classList.remove("hidden");
+    toggleVoicePanel.textContent = "←";
+  }
+});
+
+// Small connection testers
+testBackendSmall?.addEventListener("click", () => testConnectionSmall(backendUrlSmall.value, testBackendSmall, '/healthz'));
+testLlmSmall?.addEventListener("click", () => testConnectionSmall(llmApiUrlSmall.value, testLlmSmall, '/v1/models'));
 
 closeSettings?.addEventListener("click", () => {
   settingsModal?.classList.add("hidden");
@@ -383,18 +413,25 @@ function loadSettings() {
     const settings = JSON.parse(savedSettings);
     document.getElementById('backendUrl').value = settings.backend_url || '';
     document.getElementById('llmApiUrl').value = settings.llm_api_url || '';
-    document.getElementById('defaultVoice').value = settings.default_voice_personality || 'professional_female';
+    
+    // Update small settings panel
+    if (backendUrlSmall) backendUrlSmall.value = settings.backend_url || '';
+    if (llmApiUrlSmall) llmApiUrlSmall.value = settings.llm_api_url || '';
   }
 }
 
 function saveCurrentSettings() {
   const settings = {
     backend_url: document.getElementById('backendUrl').value,
-    llm_api_url: document.getElementById('llmApiUrl').value,
-    default_voice_personality: document.getElementById('defaultVoice').value
+    llm_api_url: document.getElementById('llmApiUrl').value
   };
   
   localStorage.setItem('aivoice-settings', JSON.stringify(settings));
+  
+  // Update small settings panel
+  if (backendUrlSmall) backendUrlSmall.value = settings.backend_url;
+  if (llmApiUrlSmall) llmApiUrlSmall.value = settings.llm_api_url;
+  
   showGlobalCopyFeedback('Settings saved successfully!');
 }
 
@@ -414,6 +451,35 @@ function resetAllSettings() {
   }
 }
 
+// Simplified connection testing that doesn't interrupt workflow
+async function testConnectionSmall(url, button, endpoint = '') {
+  try {
+    const originalText = button.textContent;
+    button.textContent = '✓';
+    button.style.backgroundColor = 'rgba(34, 197, 94, 0.3)';
+    
+    // Quick check without detailed error handling
+    if (endpoint) {
+      await fetch(`${url}${endpoint}`, { method: 'GET', timeout: 3000 });
+    } else {
+      await fetch(url, { method: 'POST', timeout: 3000 });
+    }
+    
+    setTimeout(() => {
+      button.textContent = originalText;
+      button.style.backgroundColor = '';
+    }, 1500);
+  } catch (error) {
+    // Silent fail - don't disrupt user experience
+    button.textContent = '✗';
+    button.style.backgroundColor = 'rgba(239, 68, 68, 0.3)';
+    setTimeout(() => {
+      button.textContent = '✓';
+      button.style.backgroundColor = '';
+    }, 1500);
+  }
+}
+
 async function testBackendConnection() {
   const url = document.getElementById('backendUrl').value;
   const button = testBackend;
@@ -422,7 +488,7 @@ async function testBackendConnection() {
     button.textContent = 'Testing...';
     button.disabled = true;
     
-    const response = await fetch(`${url}/healthz`);
+    const response = await fetch(`${url}/healthz`, { timeout: 5000 });
     if (response.ok) {
       showCopyFeedback(button, '✓ Connected');
     } else {
@@ -446,22 +512,21 @@ async function testLlmConnection() {
     button.textContent = 'Testing...';
     button.disabled = true;
     
-    // Simple test - check if endpoint responds
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'test',
-        messages: [{ role: 'user', content: 'test' }]
-      }),
-      timeout: 5000
+    // Simple reachability test
+    await fetch(`${url}/v1/models`, { 
+      method: 'GET', 
+      timeout: 5000 
+    }).catch(() => {
+      // If /v1/models fails, try a basic POST test
+      return fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'test' }),
+        timeout: 5000
+      });
     });
     
-    if (response.status === 404 || response.ok) {
-      showCopyFeedback(button, '✓ Reachable');
-    } else {
-      throw new Error('Connection failed');
-    }
+    showCopyFeedback(button, '✓ Reachable');
   } catch (error) {
     showCopyFeedback(button, '✗ Failed');
   } finally {

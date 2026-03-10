@@ -1,0 +1,11 @@
+{
+  "backend_url": "http://localhost:8003",
+  "llm_api_url": "http://192.0.2.75:1234/v1/chat/completions",
+  "llm_model": "qwen/qwen3-4b-2507",
+  "stt_model": "base",
+  "stt_device": "cuda",
+  "stt_compute_type": "float16",
+  "piper_model_root": "E:/AI_Models/Voice/piper",
+  "default_voice_personality": "professional_female",
+  "theme": "dark"
+}

@@ -1,10 +1,42 @@
 :root {
   color-scheme: dark;
+  --version: "1.0.0";
 }
 
 body {
   font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
+}
+
+/* Message Container and Copy Buttons */
+.message-container {
+  position: relative;
+  margin: 0.5rem 0;
+}
+
+.small-copy-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(100, 116, 139, 0.3);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 0.25rem;
+  color: #e2e8f0;
+  font-size: 0.75rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.small-copy-btn:hover {
+  background: rgba(100, 116, 139, 0.5);
+  border-color: rgba(148, 163, 184, 0.5);
+  transform: scale(1.1);
 }
 
 .message {
@@ -85,5 +117,367 @@ body {
   100% {
     box-shadow: 0 20px 45px rgba(168, 85, 247, 0.35);
   }
+}
+
+/* Message Content Formatting */
+.message p {
+  margin: 0 0 1rem 0;
+  line-height: 1.6;
+}
+
+.message p:last-child {
+  margin-bottom: 0;
+}
+
+/* Headers */
+.message .main-header {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin: 1.5rem 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.message .section-header {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  margin: 1.25rem 0 0.75rem 0;
+}
+
+/* Code Blocks */
+.message .code-section {
+  margin: 1rem 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+.message .code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: rgba(15, 23, 42, 0.9);
+  border-bottom: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+.message .code-lang {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.message .copy-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+}
+
+.message .copy-btn:hover {
+  background: rgba(148, 163, 184, 0.2);
+  color: #e2e8f0;
+}
+
+.message .code-block {
+  margin: 0;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.message code {
+  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.message .inline-code {
+  background: rgba(100, 116, 139, 0.3);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  color: #e2e8f0;
+}
+
+/* Bullet Lists */
+.message .bullet-list {
+  margin: 0.75rem 0;
+  padding-left: 1.5rem;
+}
+
+.message .bullet-list li {
+  margin: 0.25rem 0;
+  line-height: 1.5;
+}
+
+/* Info Boxes */
+.message .info-box {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+  border-left: 4px solid;
+}
+
+.message .info-box.tip {
+  background: rgba(56, 189, 248, 0.15);
+  border-left-color: #38bdf8;
+}
+
+.message .info-box.warning {
+  background: rgba(251, 191, 36, 0.15);
+  border-left-color: #fbbf24;
+}
+
+.message .info-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.message .info-content {
+  flex: 1;
+}
+
+.message .info-content p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.message .info-content ul {
+  margin: 0.5rem 0 0 0;
+  padding-left: 1.25rem;
+}
+
+.message .info-content li {
+  margin: 0.25rem 0;
+}
+
+/* Copy Message Button */
+.copy-message-button {
+  margin: 0.75rem auto;
+  padding: 0.5rem 1rem;
+  background: rgba(100, 116, 139, 0.3);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 0.5rem;
+  color: #e2e8f0;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: block;
+  width: fit-content;
+}
+
+.copy-message-button:hover {
+  background: rgba(100, 116, 139, 0.5);
+  border-color: rgba(148, 163, 184, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Copy Notification */
+.copy-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(34, 197, 94, 0.9);
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Optimized Layout Spacing */
+.voice-panel {
+  padding: 1rem;
+}
+
+#conversation {
+  height: 65vh; /* Increased from 72 to give more space */
+  padding: 0.75rem;
+}
+
+.ptt-button {
+  height: 4rem; /* Reduced from h-20 (5rem) to h-16 (4rem) */
+  margin: 1rem 0; /* Reduced margin */
+}
+
+/* Status section spacing */
+#statusText {
+  margin-bottom: 0.75rem; /* Reduced from default */
+}
+
+#transcription {
+  margin-top: 0.75rem; /* Reduced spacing */
+  height: 6rem; /* Slightly reduced height */
+}
+
+/* Text query section */
+#textForm {
+  margin-top: 1rem; /* Reduced from default */
+}
+
+/* Overall container optimization */
+main {
+  padding: 1rem; /* Reduced from default 4 */
+}
+
+.space-y-6 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 1rem; /* Reduced from 1.5rem */
+}
+
+/* Scrollbar styling for better UX */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.7);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #conversation {
+    height: 55vh;
+  }
+  
+  .ptt-button {
+    height: 3.5rem;
+  }
+  
+  main {
+    padding: 0.75rem;
+  }
+}
+
+/* Fix for code block overflow */
+.code-block {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.code-section {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Copy Message Button */
+.copy-message-button {
+  margin: 0.75rem auto;
+  padding: 0.5rem 1rem;
+  background: rgba(100, 116, 139, 0.3);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 0.5rem;
+  color: #e2e8f0;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: block;
+  width: fit-content;
+}
+
+.copy-message-button:hover {
+  background: rgba(100, 116, 139, 0.5);
+  border-color: rgba(148, 163, 184, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Copy Notification */
+.copy-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(34, 197, 94, 0.9);
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Optimized Layout Spacing */
+.voice-panel {
+  padding: 1rem;
+}
+
+#conversation {
+  height: 65vh; /* Increased from 72 to give more space */
+  padding: 0.75rem;
+}
+
+.ptt-button {
+  height: 4rem; /* Reduced from h-20 (5rem) to h-16 (4rem) */
+  margin: 1rem 0; /* Reduced margin */
+}
+
+/* Status section spacing */
+#statusText {
+  margin-bottom: 0.75rem; /* Reduced from default */
+}
+
+#transcription {
+  margin-top: 0.75rem; /* Reduced spacing */
+  height: 6rem; /* Slightly reduced height */
+}
+
+/* Text query section */
+#textForm {
+  margin-top: 1rem; /* Reduced from default */
+}
+
+/* Overall container optimization */
+main {
+  padding: 1rem; /* Reduced from default 4 */
+}
+
+.space-y-6 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 1rem; /* Reduced from 1.5rem */
 }
 

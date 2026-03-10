@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "name": "AIVoice Assistant",
+  "description": "Local AI Voice Assistant with STT-LLM-TTS pipeline",
+  "author": "manxlr",
+  "email": "nszeeshankhalid@gmail.com",
+  "repository": "https://github.com/manxlr/AIVoice",
+  "license": "MIT"
+}

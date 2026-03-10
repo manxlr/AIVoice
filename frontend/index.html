@@ -11,11 +11,10 @@
     <main class="max-w-6xl mx-auto px-4 py-8 space-y-6">
       <header class="space-y-2 text-center">
         <h1 class="text-3xl font-semibold tracking-tight">
-          Local AI Voice Assistant
+          Local AI Assistant
         </h1>
         <p class="text-sm text-slate-400">
-          Hold the button, speak, release to process. Responses stream in both
-          text and audio.
+          Voice and text interaction with AI. Hold button to speak or type your message.
         </p>
       </header>
 
@@ -40,53 +39,125 @@
             <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-400">
               Conversation
             </h2>
-            <div id="conversation" class="h-72 space-y-3 overflow-y-auto rounded-lg border border-slate-800/50 bg-slate-950/60 p-3 text-sm"></div>
-          </article>
-
-          <article class="flex flex-col justify-between rounded-xl border border-slate-800/60 bg-slate-900/40 p-6 backdrop-blur">
-            <div>
-              <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">
-                Status
-              </h2>
-              <p id="statusText" class="mt-2 text-lg font-medium text-emerald-400">
-                Connecting...
-              </p>
-              <p id="transcription" class="mt-4 h-24 overflow-y-auto rounded border border-slate-800/50 bg-slate-950/40 p-3 text-sm text-slate-300">
-                Transcript will appear here.
-              </p>
-            </div>
-
-            <button
-              id="pttButton"
-              class="ptt-button mt-6 h-20 w-full rounded-full border border-purple-500/60 bg-gradient-to-r from-purple-500/80 via-fuchsia-500/70 to-violet-600/80 text-lg font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:scale-[1.02] active:scale-95"
-            >
-              Hold To Talk
-            </button>
+            <div id="conversation" class="h-[65vh] space-y-3 overflow-y-auto rounded-lg border border-slate-800/50 bg-slate-950/60 p-3 text-sm"></div>
           </article>
 
           <article class="rounded-xl border border-slate-800/60 bg-slate-900/40 p-6 backdrop-blur">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">
-              Text Query
-            </h2>
-            <form id="textForm" class="mt-3 flex gap-3">
-              <input
-                id="textInput"
-                type="text"
-                placeholder="Type a message or follow-up..."
-                class="flex-1 rounded-lg border border-slate-800/40 bg-slate-950/60 px-4 py-3 text-sm text-slate-100 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/40"
-              />
-              <button
-                type="submit"
-                class="rounded-lg bg-purple-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-purple-500 active:scale-95"
-              >
-                Send
+            <div class="flex justify-between items-start mb-4">
+              <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">
+                Interaction
+              </h2>
+              <button id="settingsBtn" class="text-slate-400 hover:text-white text-sm flex items-center gap-1">
+                ⚙️ Settings
               </button>
-            </form>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Status Panel -->
+              <div>
+                <h3 class="text-sm font-medium text-slate-300 mb-2">Status</h3>
+                <p id="statusText" class="text-lg font-medium text-emerald-400 mb-3">
+                  Connecting...
+                </p>
+                <p id="transcription" class="h-20 overflow-y-auto rounded border border-slate-800/50 bg-slate-950/40 p-3 text-sm text-slate-300">
+                  Transcript will appear here.
+                </p>
+              </div>
+              
+              <!-- Text Input Panel -->
+              <div>
+                <h3 class="text-sm font-medium text-slate-300 mb-2">Text Query</h3>
+                <form id="textForm" class="flex gap-2">
+                  <input
+                    id="textInput"
+                    type="text"
+                    placeholder="Type your message..."
+                    class="flex-1 rounded-lg border border-slate-800/40 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/40"
+                  />
+                  <button
+                    type="submit"
+                    class="rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-purple-500 active:scale-95 flex items-center gap-1"
+                  >
+                    📤 Send
+                  </button>
+                </form>
+                <button
+                  id="pttButton"
+                  class="ptt-button mt-3 w-full h-12 rounded-full border border-purple-500/60 bg-gradient-to-r from-purple-500/80 via-fuchsia-500/70 to-violet-600/80 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2"
+                >
+                  🎤 Hold To Talk
+                </button>
+              </div>
+            </div>
           </article>
         </section>
       </div>
     </main>
 
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+      <div class="bg-slate-900 rounded-xl border border-slate-700 w-full max-w-2xl mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+        <div class="p-6 border-b border-slate-700">
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold text-white">⚙️ Settings</h2>
+            <button id="closeSettings" class="text-slate-400 hover:text-white text-2xl">×</button>
+          </div>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto p-6">
+          <div class="space-y-6">
+            <!-- Connection Settings -->
+            <div>
+              <h3 class="text-lg font-medium text-slate-200 mb-4">Connection Settings</h3>
+              
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-2">Backend URL</label>
+                  <div class="flex gap-2">
+                    <input type="text" id="backendUrl" class="flex-1 rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-white" placeholder="http://localhost:8003">
+                    <button id="testBackend" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium text-white">Test</button>
+                  </div>
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-2">LLM API URL</label>
+                  <div class="flex gap-2">
+                    <input type="text" id="llmApiUrl" class="flex-1 rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-white" placeholder="http://192.0.2.75:1234/v1/chat/completions">
+                    <button id="testLlm" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium text-white">Test</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Voice Settings -->
+            <div>
+              <h3 class="text-lg font-medium text-slate-200 mb-4">Voice Settings</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-2">Default Voice Personality</label>
+                  <select id="defaultVoice" class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-white">
+                    <option value="professional_female">Professional Female</option>
+                    <option value="professional_male">Professional Male</option>
+                    <option value="seductive_female">Seductive Female</option>
+                    <option value="romantic_female">Romantic Female</option>
+                    <option value="deep_male">Deep Male</option>
+                    <option value="energetic_male">Energetic Male</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="flex gap-3 pt-4 border-t border-slate-700">
+              <button id="saveSettings" class="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-sm font-medium text-white">Save Settings</button>
+              <button id="restoreDefaults" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg text-sm font-medium text-white">Restore Defaults</button>
+              <button id="resetAll" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-medium text-white">Reset All</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <script type="module" src="js/main.js"></script>
   </body>
 </html>

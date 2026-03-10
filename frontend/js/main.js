@@ -10,6 +10,14 @@ const statusEl = document.getElementById("statusText");
 const pttButton = document.getElementById("pttButton");
 const textForm = document.getElementById("textForm");
 const textInput = document.getElementById("textInput");
+const settingsBtn = document.getElementById("settingsBtn");
+const settingsModal = document.getElementById("settingsModal");
+const closeSettings = document.getElementById("closeSettings");
+const saveSettings = document.getElementById("saveSettings");
+const restoreDefaults = document.getElementById("restoreDefaults");
+const resetAll = document.getElementById("resetAll");
+const testBackend = document.getElementById("testBackend");
+const testLlm = document.getElementById("testLlm");
 const voiceListEl = document.getElementById("voiceList");
 
 const playback = new AudioPlayback();
@@ -23,15 +31,173 @@ let availableVoices = [];
 let activeVoiceId = null;
 
 function appendMessage(text, role) {
+  const messageContainer = document.createElement("div");
+  messageContainer.className = "message-container";
+  
   const wrapper = document.createElement("div");
   wrapper.className = `message ${role}`;
-  wrapper.textContent = text;
+  
+  // Parse and format markdown-like content
+  wrapper.innerHTML = formatMessageContent(text);
+  
+  // Add copy button for assistant messages
+  if (role === 'assistant') {
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'small-copy-btn';
+    copyBtn.innerHTML = '📋';
+    copyBtn.title = 'Copy response';
+    copyBtn.onclick = function() {
+      copyMessageText(wrapper, copyBtn);
+    };
+    messageContainer.appendChild(copyBtn);
+  }
+  
   const row = document.createElement("div");
   row.className = "flex";
   row.style.justifyContent = role === "user" ? "flex-end" : "flex-start";
   row.appendChild(wrapper);
-  conversationEl.appendChild(row);
+  messageContainer.appendChild(row);
+  
+  conversationEl.appendChild(messageContainer);
   conversationEl.scrollTop = conversationEl.scrollHeight;
+}
+
+function addCopyMessageButton() {
+  // Remove existing copy button if present
+  const existingBtn = document.getElementById('copy-message-btn');
+  if (existingBtn) existingBtn.remove();
+  
+  // Create copy button
+  const copyBtn = document.createElement('button');
+  copyBtn.id = 'copy-message-btn';
+  copyBtn.className = 'copy-message-button';
+  copyBtn.innerHTML = '📋 Copy Response';
+  copyBtn.onclick = copyEntireMessage;
+  
+  // Insert before the conversation container
+  conversationEl.parentNode.insertBefore(copyBtn, conversationEl.nextSibling);
+}
+
+function formatMessageContent(text) {
+  if (!text) return '';
+  
+  let formatted = text;
+  
+  // Handle code blocks with language specification
+  formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+    const language = lang || 'text';
+    return `
+      <div class="code-section">
+        <div class="code-header">
+          <span class="code-lang">${language.toUpperCase()}</span>
+          <button class="copy-btn" onclick="copyCode(this)">📋</button>
+        </div>
+        <pre class="code-block"><code class="language-${language}">${escapeHtml(code.trim())}</code></pre>
+      </div>
+    `;
+  });
+  
+  // Handle inline code
+  formatted = formatted.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
+  
+  // Handle headers (## Header)
+  formatted = formatted.replace(/^##\s+(.+)$/gm, '<h3 class="section-header">$1</h3>');
+  formatted = formatted.replace(/^#\s+(.+)$/gm, '<h2 class="main-header">$1</h2>');
+  
+  // Handle bullet points
+  formatted = formatted.replace(/^\s*[-*]\s+(.+)$/gm, '<li>$1</li>');
+  formatted = formatted.replace(/(<li>.*<\/li>)/s, '<ul class="bullet-list">$1</ul>');
+  
+  // Handle tip/info boxes
+  formatted = formatted.replace(/\*\*(Tip|Note|Info):\*\*\s*(.*?)(?=\n\n|$)/gs, 
+    '<div class="info-box tip"><div class="info-icon">💡</div><div class="info-content">$2</div></div>');
+  
+  formatted = formatted.replace(/\*\*(Warning|Caution):\*\*\s*(.*?)(?=\n\n|$)/gs, 
+    '<div class="info-box warning"><div class="info-icon">⚠️</div><div class="info-content">$2</div></div>');
+  
+  // Handle paragraphs
+  formatted = formatted.replace(/\n\n/g, '</p><p>');
+  formatted = '<p>' + formatted + '</p>';
+  
+  // Clean up empty paragraphs
+  formatted = formatted.replace(/<p>\s*<\/p>/g, '');
+  
+  return formatted;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Global copy state
+let copiedTimeout = null;
+
+function copyCode(button) {
+  const codeBlock = button.closest('.code-section').querySelector('code');
+  const fullText = codeBlock.textContent;
+  
+  navigator.clipboard.writeText(fullText).then(() => {
+    showCopyFeedback(button, 'Copied!');
+  }).catch(err => {
+    console.error('Failed to copy:', err);
+    showCopyFeedback(button, 'Failed');
+  });
+}
+
+function copyEntireMessage() {
+  // Get the last assistant message container
+  const lastMessageContainer = conversationEl.querySelector('.message-container');
+  if (lastMessageContainer) {
+    const assistantMessage = lastMessageContainer.querySelector('.message.assistant');
+    if (assistantMessage) {
+      const fullText = assistantMessage.innerText || assistantMessage.textContent;
+      navigator.clipboard.writeText(fullText).then(() => {
+        showGlobalCopyFeedback('Message copied to clipboard!');
+      }).catch(err => {
+        console.error('Failed to copy message:', err);
+        showGlobalCopyFeedback('Failed to copy');
+      });
+    }
+  }
+}
+
+function copyMessageText(messageElement, button) {
+  const fullText = messageElement.innerText || messageElement.textContent;
+  navigator.clipboard.writeText(fullText).then(() => {
+    showCopyFeedback(button, '✓');
+  }).catch(err => {
+    console.error('Failed to copy:', err);
+    showCopyFeedback(button, '✗');
+  });
+}
+
+function showCopyFeedback(button, message) {
+  const originalText = button.textContent;
+  button.textContent = message;
+  button.style.backgroundColor = 'rgba(34, 197, 94, 0.3)';
+  
+  clearTimeout(copiedTimeout);
+  copiedTimeout = setTimeout(() => {
+    button.textContent = originalText;
+    button.style.backgroundColor = '';
+  }, 1500);
+}
+
+function showGlobalCopyFeedback(message) {
+  // Create temporary notification
+  const notification = document.createElement('div');
+  notification.className = 'copy-notification';
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  
+  // Remove after delay
+  setTimeout(() => {
+    if (notification.parentNode) {
+      notification.parentNode.removeChild(notification);
+    }
+  }, 2000);
 }
 
 function renderVoices() {
@@ -186,4 +352,123 @@ textForm.addEventListener("submit", (evt) => {
   socket.sendJSON({ type: "text_query", text });
   textInput.value = "";
 });
+
+settingsBtn?.addEventListener("click", () => {
+  loadSettings();
+  settingsModal?.classList.remove("hidden");
+});
+
+closeSettings?.addEventListener("click", () => {
+  settingsModal?.classList.add("hidden");
+});
+
+saveSettings?.addEventListener("click", saveCurrentSettings);
+restoreDefaults?.addEventListener("click", restoreDefaultSettings);
+resetAll?.addEventListener("click", resetAllSettings);
+testBackend?.addEventListener("click", testBackendConnection);
+testLlm?.addEventListener("click", testLlmConnection);
+
+// Close modal when clicking outside
+settingsModal?.addEventListener("click", (e) => {
+  if (e.target === settingsModal) {
+    settingsModal?.classList.add("hidden");
+  }
+});
+
+// Settings functions
+function loadSettings() {
+  // Load from localStorage or config file
+  const savedSettings = localStorage.getItem('aivoice-settings');
+  if (savedSettings) {
+    const settings = JSON.parse(savedSettings);
+    document.getElementById('backendUrl').value = settings.backend_url || '';
+    document.getElementById('llmApiUrl').value = settings.llm_api_url || '';
+    document.getElementById('defaultVoice').value = settings.default_voice_personality || 'professional_female';
+  }
+}
+
+function saveCurrentSettings() {
+  const settings = {
+    backend_url: document.getElementById('backendUrl').value,
+    llm_api_url: document.getElementById('llmApiUrl').value,
+    default_voice_personality: document.getElementById('defaultVoice').value
+  };
+  
+  localStorage.setItem('aivoice-settings', JSON.stringify(settings));
+  showGlobalCopyFeedback('Settings saved successfully!');
+}
+
+function restoreDefaultSettings() {
+  if (confirm('Restore default connection settings?')) {
+    document.getElementById('backendUrl').value = 'http://localhost:8003';
+    document.getElementById('llmApiUrl').value = 'http://192.0.2.75:1234/v1/chat/completions';
+    showGlobalCopyFeedback('Defaults restored');
+  }
+}
+
+function resetAllSettings() {
+  if (confirm('Reset ALL settings to factory defaults?')) {
+    localStorage.removeItem('aivoice-settings');
+    loadSettings();
+    showGlobalCopyFeedback('All settings reset');
+  }
+}
+
+async function testBackendConnection() {
+  const url = document.getElementById('backendUrl').value;
+  const button = testBackend;
+  
+  try {
+    button.textContent = 'Testing...';
+    button.disabled = true;
+    
+    const response = await fetch(`${url}/healthz`);
+    if (response.ok) {
+      showCopyFeedback(button, '✓ Connected');
+    } else {
+      throw new Error('Connection failed');
+    }
+  } catch (error) {
+    showCopyFeedback(button, '✗ Failed');
+  } finally {
+    setTimeout(() => {
+      button.textContent = 'Test';
+      button.disabled = false;
+    }, 2000);
+  }
+}
+
+async function testLlmConnection() {
+  const url = document.getElementById('llmApiUrl').value;
+  const button = testLlm;
+  
+  try {
+    button.textContent = 'Testing...';
+    button.disabled = true;
+    
+    // Simple test - check if endpoint responds
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'test',
+        messages: [{ role: 'user', content: 'test' }]
+      }),
+      timeout: 5000
+    });
+    
+    if (response.status === 404 || response.ok) {
+      showCopyFeedback(button, '✓ Reachable');
+    } else {
+      throw new Error('Connection failed');
+    }
+  } catch (error) {
+    showCopyFeedback(button, '✗ Failed');
+  } finally {
+    setTimeout(() => {
+      button.textContent = 'Test';
+      button.disabled = false;
+    }, 2000);
+  }
+}
 

@@ -12,11 +12,11 @@
 .light-mode {
   color-scheme: light;
   --bg-primary: #f8fafc;
-  --bg-secondary: #f1f5f9;
-  --bg-tertiary: #e2e8f0;
-  --text-primary: #0f172a;
-  --text-secondary: #334155;
-  --border-color: rgba(100, 116, 139, 0.3);
+  --bg-secondary: white;
+  --bg-tertiary: white;
+  --text-primary: black;
+  --text-secondary: #374151;
+  --border-color: #d1d5db;
 }
 
 .light-mode body {
@@ -25,9 +25,25 @@
 }
 
 .light-mode .voice-panel,
-.light-mode .rounded-xl {
-  background-color: var(--bg-secondary);
-  border-color: var(--border-color);
+.light-mode .rounded-xl,
+.light-mode aside,
+.light-mode article {
+  background-color: white;
+  border-color: #d1d5db;
+  color: black;
+}
+
+.light-mode .voice-panel *,
+.light-mode .rounded-xl *,
+.light-mode aside *,
+.light-mode article * {
+  color: black;
+}
+
+.light-mode #conversation {
+  background-color: white;
+  color: black;
+  border-color: #d1d5db;
 }
 
 .light-mode .message.user {
@@ -41,19 +57,33 @@
 }
 
 .light-mode input,
-.light-mode textarea {
-  background-color: var(--bg-tertiary);
-  color: var(--text-primary);
-  border-color: var(--border-color);
+.light-mode textarea,
+.light-mode select {
+  background-color: white;
+  color: black;
+  border-color: #d1d5db;
 }
 
-.light-mode button {
-  color: var(--text-primary);
+.light-mode input::placeholder,
+.light-mode textarea::placeholder {
+  color: #6b7280;
 }
 
-.light-mode code {
-  background-color: var(--bg-tertiary);
-  color: var(--text-primary);
+.light-mode button:not(.ptt-button) {
+  background-color: white;
+  color: black;
+  border-color: #d1d5db;
+}
+
+.light-mode button:hover:not(.ptt-button) {
+  background-color: #f3f4f6;
+}
+
+.light-mode code,
+.light-mode pre {
+  background-color: #f3f4f6;
+  color: black;
+  border-color: #d1d5db;
 }
 
 body {

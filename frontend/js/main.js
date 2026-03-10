@@ -45,6 +45,7 @@ let availableVoices = [];
 let activeVoiceId = null;
 
 function appendMessage(text, role) {
+  console.log(`Appending ${role} message:`, text.substring(0, 50) + '...');
   const messageContainer = document.createElement("div");
   messageContainer.className = "message-container";
   
@@ -184,8 +185,21 @@ function escapeHtml(text) {
 let copiedTimeout = null;
 
 function copyCode(button) {
-  const codeBlock = button.closest('.code-section').querySelector('code');
+  console.log('Copy button clicked');
+  const codeSection = button.closest('.code-section');
+  console.log('Code section found:', codeSection);
+  
+  const codeBlock = codeSection?.querySelector('code');
+  console.log('Code block found:', codeBlock);
+  
+  if (!codeBlock) {
+    console.error('Could not find code block');
+    showCopyFeedback(button, 'Error');
+    return;
+  }
+  
   const fullText = codeBlock.textContent;
+  console.log('Copying text:', fullText.substring(0, 50) + '...');
   
   navigator.clipboard.writeText(fullText).then(() => {
     showCopyFeedback(button, 'Copied!');
@@ -317,10 +331,13 @@ socket.on("close", () => {
 });
 
 socket.on("json", (payload) => {
+  console.log('Received JSON payload:', payload);
   switch (payload.type) {
     case "transcription":
+      console.log('Transcription received:', payload.text);
       transcriptionEl.textContent = payload.text || "[unrecognized]";
       if (payload.text) {
+        console.log('Appending transcription to chat');
         appendMessage(payload.text, "user");
       }
       break;
@@ -409,9 +426,13 @@ textForm.addEventListener("submit", (evt) => {
   textInput.value = "";
 });
 
-settingsBtn?.addEventListener("click", () => {
+settingsBtn?.addEventListener("click", (e) => {
+  console.log('Settings button clicked');
+  console.log('Settings modal element:', settingsModal);
   loadSettings();
   settingsModal?.classList.remove("hidden");
+  e.preventDefault();
+  e.stopPropagation();
 });
 
 // Voice Panel Toggle

@@ -23,11 +23,15 @@ const testLlm = document.getElementById("testLlm");
 const toggleVoicePanel = document.getElementById("toggleVoicePanel");
 const voicePanel = document.getElementById("voicePanel");
 const voicePanelContent = document.getElementById("voicePanelContent");
-const openFullSettings = document.getElementById("openFullSettings");
-const testBackendSmall = document.getElementById("testBackendSmall");
-const testLlmSmall = document.getElementById("testLlmSmall");
-const backendUrlSmall = document.getElementById("backendUrlSmall");
-const llmApiUrlSmall = document.getElementById("llmApiUrlSmall");
+const settingsBtn = document.getElementById("settingsBtn");
+const themeToggle = document.getElementById("themeToggle");
+const helpBtn = document.getElementById("helpBtn");
+const helpModal = document.getElementById("helpModal");
+const closeHelp = document.getElementById("closeHelp");
+const appVersion = document.getElementById("appVersion");
+const buildDate = document.getElementById("buildDate");
+const piperModelsPath = document.getElementById("piperModelsPath");
+const whisperModelsPath = document.getElementById("whisperModelsPath");
 const voiceListEl = document.getElementById("voiceList");
 
 const playback = new AudioPlayback();
@@ -405,7 +409,7 @@ textForm.addEventListener("submit", (evt) => {
   textInput.value = "";
 });
 
-openFullSettings?.addEventListener("click", () => {
+settingsBtn?.addEventListener("click", () => {
   loadSettings();
   settingsModal?.classList.remove("hidden");
 });
@@ -440,9 +444,34 @@ voicePanel?.addEventListener("click", () => {
   }
 });
 
-// Small connection testers
-testBackendSmall?.addEventListener("click", () => testConnectionSmall(backendUrlSmall.value, testBackendSmall, '/healthz'));
-testLlmSmall?.addEventListener("click", () => testConnectionSmall(llmApiUrlSmall.value, testLlmSmall, '/v1/models'));
+// Theme Toggle
+let isDarkMode = true;
+
+themeToggle?.addEventListener("click", () => {
+  isDarkMode = !isDarkMode;
+  document.documentElement.classList.toggle('light-mode', !isDarkMode);
+  themeToggle.textContent = isDarkMode ? '☀️' : '🌙';
+  themeToggle.title = isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+});
+
+// Help Modal
+helpBtn?.addEventListener("click", () => {
+  helpModal?.classList.remove("hidden");
+});
+
+closeHelp?.addEventListener("click", () => {
+  helpModal?.classList.add("hidden");
+});
+
+// Close modals when clicking outside
+document.addEventListener('click', (e) => {
+  if (e.target === settingsModal) {
+    settingsModal?.classList.add("hidden");
+  }
+  if (e.target === helpModal) {
+    helpModal?.classList.add("hidden");
+  }
+});
 
 closeSettings?.addEventListener("click", () => {
   settingsModal?.classList.add("hidden");
@@ -461,8 +490,21 @@ settingsModal?.addEventListener("click", (e) => {
   }
 });
 
+// Version and Build Info
+function loadVersionInfo() {
+  // In a real app, this would come from a config file or API
+  const version = '1.2.0';
+  const buildDate = new Date().toLocaleDateString();
+  
+  if (appVersion) appVersion.textContent = version;
+  if (buildDate) buildDate.textContent = buildDate;
+}
+
 // Settings functions
 function loadSettings() {
+  // Load version info
+  loadVersionInfo();
+  
   // Load from localStorage or config file
   const savedSettings = localStorage.getItem('aivoice-settings');
   if (savedSettings) {
@@ -470,23 +512,20 @@ function loadSettings() {
     document.getElementById('backendUrl').value = settings.backend_url || '';
     document.getElementById('llmApiUrl').value = settings.llm_api_url || '';
     
-    // Update small settings panel
-    if (backendUrlSmall) backendUrlSmall.value = settings.backend_url || '';
-    if (llmApiUrlSmall) llmApiUrlSmall.value = settings.llm_api_url || '';
+    if (piperModelsPath) piperModelsPath.value = settings.piper_models_path || '';
+    if (whisperModelsPath) whisperModelsPath.value = settings.whisper_models_path || '';
   }
 }
 
 function saveCurrentSettings() {
   const settings = {
     backend_url: document.getElementById('backendUrl').value,
-    llm_api_url: document.getElementById('llmApiUrl').value
+    llm_api_url: document.getElementById('llmApiUrl').value,
+    piper_models_path: piperModelsPath?.value || '',
+    whisper_models_path: whisperModelsPath?.value || ''
   };
   
   localStorage.setItem('aivoice-settings', JSON.stringify(settings));
-  
-  // Update small settings panel
-  if (backendUrlSmall) backendUrlSmall.value = settings.backend_url;
-  if (llmApiUrlSmall) llmApiUrlSmall.value = settings.llm_api_url;
   
   showGlobalCopyFeedback('Settings saved successfully!');
 }
@@ -495,6 +534,8 @@ function restoreDefaultSettings() {
   if (confirm('Restore default connection settings?')) {
     document.getElementById('backendUrl').value = 'http://localhost:8003';
     document.getElementById('llmApiUrl').value = 'http://192.0.2.75:1234/v1/chat/completions';
+    if (piperModelsPath) piperModelsPath.value = 'E:\\AI_Models\\Voice\\piper';
+    if (whisperModelsPath) whisperModelsPath.value = 'E:\\AI_Models\\Voice\\whisper';
     showGlobalCopyFeedback('Defaults restored');
   }
 }

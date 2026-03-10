@@ -46,43 +46,28 @@
               <div id="voiceList" class="space-y-2"></div>
             </div>
             
-            <!-- Settings Section -->
-            <div>
-              <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
-                Configuration
-              </h3>
-              <div class="space-y-3">
-                <div>
-                  <label class="block text-xs text-slate-400 mb-1">Backend URL</label>
-                  <div class="flex gap-1">
-                    <input type="text" id="backendUrlSmall" class="flex-1 rounded border border-slate-600 bg-slate-800 px-2 py-1 text-xs text-white" placeholder="http://localhost:8003">
-                    <button id="testBackendSmall" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs text-white">✓</button>
-                  </div>
-                </div>
-                
-                <div>
-                  <label class="block text-xs text-slate-400 mb-1">LLM API URL</label>
-                  <div class="flex gap-1">
-                    <input type="text" id="llmApiUrlSmall" class="flex-1 rounded border border-slate-600 bg-slate-800 px-2 py-1 text-xs text-white" placeholder="http://192.0.2.75:1234/v1/chat/completions">
-                    <button id="testLlmSmall" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs text-white">✓</button>
-                  </div>
-                </div>
-                
-                <button id="openFullSettings" class="w-full px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded text-xs text-slate-200 transition-colors">
-                  Advanced Settings
-                </button>
-              </div>
-            </div>
+
           </div>
         </aside>
 
         <section class="flex-1 flex flex-col">
-          <!-- Header with Connection Indicator -->
+          <!-- Header with Controls -->
           <div class="flex justify-between items-center mb-4">
             <h1 class="text-xl font-semibold text-slate-200">Local AI Assistant</h1>
-            <div class="flex items-center gap-2">
-              <div id="connectionIndicator" class="w-3 h-3 rounded-full bg-gray-500"></div>
-              <span class="text-xs text-slate-400">Ready</span>
+            <div class="flex items-center gap-3">
+              <button id="themeToggle" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors" title="Toggle Light/Dark Mode">
+                ☀️
+              </button>
+              <button id="helpBtn" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors" title="Help & Tutorial">
+                ❓
+              </button>
+              <button id="settingsBtn" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors" title="Settings">
+                ⚙️
+              </button>
+              <div class="flex items-center gap-2">
+                <div id="connectionIndicator" class="w-3 h-3 rounded-full bg-gray-500"></div>
+                <span class="text-xs text-slate-400">Ready</span>
+              </div>
             </div>
           </div>
           
@@ -136,6 +121,18 @@
         
         <div class="flex-1 overflow-y-auto p-6">
           <div class="space-y-6">
+            <!-- Version Info -->
+            <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+              <div class="flex justify-between items-center">
+                <div>
+                  <h3 class="text-lg font-medium text-slate-200">AIVoice Assistant</h3>
+                  <p class="text-sm text-slate-400">Version: <span id="appVersion">1.0.0</span></p>
+                  <p class="text-sm text-slate-400">Build Date: <span id="buildDate">2024-01-01</span></p>
+                </div>
+                <div class="text-2xl">🤖</div>
+              </div>
+            </div>
+            
             <!-- Connection Settings -->
             <div>
               <h3 class="text-lg font-medium text-slate-200 mb-4">Connection Settings</h3>
@@ -159,13 +156,90 @@
               </div>
             </div>
             
-
+            <!-- Voice Model Paths -->
+            <div>
+              <h3 class="text-lg font-medium text-slate-200 mb-4">Voice Model Paths</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-2">
+                    Piper TTS Models Path
+                    <span class="text-xs text-slate-500 ml-2" title="Path to folder containing Piper voice models (.onnx files)">ⓘ</span>
+                  </label>
+                  <input type="text" id="piperModelsPath" class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-white" placeholder="E:\AI_Models\Voice\piper">
+                  <p class="text-xs text-slate-500 mt-1">Folder should contain .onnx model files and config.json files</p>
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-2">
+                    Whisper Models Path
+                    <span class="text-xs text-slate-500 ml-2" title="Path to folder containing Whisper model files">ⓘ</span>
+                  </label>
+                  <input type="text" id="whisperModelsPath" class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-white" placeholder="E:\AI_Models\Voice\whisper">
+                  <p class="text-xs text-slate-500 mt-1">Folder should contain Whisper model files (.bin or .pt files)</p>
+                </div>
+              </div>
+            </div>
             
             <!-- Actions -->
             <div class="flex gap-3 pt-4 border-t border-slate-700">
               <button id="saveSettings" class="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-sm font-medium text-white">Save Settings</button>
               <button id="restoreDefaults" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg text-sm font-medium text-white">Restore Defaults</button>
               <button id="resetAll" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-medium text-white">Reset All</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Help/Tutorial Modal -->
+    <div id="helpModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+      <div class="bg-slate-900 rounded-xl border border-slate-700 w-full max-w-3xl mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+        <div class="p-6 border-b border-slate-700">
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold text-white">❓ Help & Tutorial</h2>
+            <button id="closeHelp" class="text-slate-400 hover:text-white text-2xl">×</button>
+          </div>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto p-6">
+          <div class="space-y-6 text-slate-300">
+            <div>
+              <h3 class="text-lg font-semibold text-slate-200 mb-3">🚀 Getting Started</h3>
+              <ol class="list-decimal list-inside space-y-2 text-sm">
+                <li>Ensure LM Studio is running with your preferred model loaded</li>
+                <li>Start the backend server: <code class="bg-slate-800 px-2 py-1 rounded text-xs">uvicorn app.main:app --port 8003</code></li>
+                <li>Select a voice personality from the left panel</li>
+                <li>Use "Hold To Talk" for voice input or type in the text box</li>
+              </ol>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-semibold text-slate-200 mb-3">⚙️ Settings</h3>
+              <ul class="list-disc list-inside space-y-2 text-sm">
+                <li><strong>Backend URL</strong>: Address of your AIVoice backend server</li>
+                <li><strong>LLM API URL</strong>: LM Studio API endpoint (usually ends with /v1/chat/completions)</li>
+                <li><strong>Voice Model Paths</strong>: Directories containing Piper TTS and Whisper models</li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-semibold text-slate-200 mb-3">🎤 Voice Features</h3>
+              <ul class="list-disc list-inside space-y-2 text-sm">
+                <li>Multiple voice personalities available</li>
+                <li>Dual-response system (spoken brief + detailed text)</li>
+                <li>Real-time speech-to-text transcription</li>
+                <li>Text-to-speech playback</li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-semibold text-slate-200 mb-3">💡 Tips</h3>
+              <ul class="list-disc list-inside space-y-2 text-sm">
+                <li>Click the gear icon (⚙️) to access full settings</li>
+                <li>Use the sun/moon icon (☀️) to toggle light/dark mode</li>
+                <li>Individual copy buttons appear on code blocks and responses</li>
+                <li>Voice panel can be minimized by clicking the arrow</li>
+              </ul>
             </div>
           </div>
         </div>

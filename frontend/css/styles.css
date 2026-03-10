@@ -1,6 +1,59 @@
 :root {
   color-scheme: dark;
   --version: "1.0.0";
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --border-color: rgba(148, 163, 184, 0.3);
+}
+
+.light-mode {
+  color-scheme: light;
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-tertiary: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --border-color: rgba(100, 116, 139, 0.3);
+}
+
+.light-mode body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.light-mode .voice-panel,
+.light-mode .rounded-xl {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+.light-mode .message.user {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.light-mode .message.assistant {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.light-mode input,
+.light-mode textarea {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.light-mode button {
+  color: var(--text-primary);
+}
+
+.light-mode code {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
 body {

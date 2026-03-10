@@ -110,15 +110,18 @@ async def _process_audio_buffer(
     await websocket.send_json({"type": "transcription", "text": transcript})
 
     history.append({"role": "user", "content": transcript})
-    reply = await llm_service.generate(transcript, history)
-    if reply:
-        history.append({"role": "assistant", "content": reply})
+    spoken_reply, text_reply = await llm_service.generate(transcript, history)
+    
+    if spoken_reply and text_reply:
+        history.append({"role": "assistant", "content": f"SPEAK: {spoken_reply}\nTEXT: {text_reply}"})
     else:
-        reply = "..."
+        spoken_reply, text_reply = "...", "..."
 
-    await websocket.send_json({"type": "assistant_text", "text": reply})
+    # Send text response first
+    await websocket.send_json({"type": "assistant_text", "text": text_reply})
 
-    audio_bytes = await tts_service.synthesize(reply, personality=voice_key)
+    # Then send spoken response for audio
+    audio_bytes = await tts_service.synthesize(spoken_reply, personality=voice_key)
     await websocket.send_bytes(audio_bytes)
     await websocket.send_json({"type": "audio_complete"})
 
@@ -130,15 +133,16 @@ async def _process_text(
     voice_key: Optional[str],
 ) -> None:
     history.append({"role": "user", "content": text})
-    reply = await llm_service.generate(text, history)
-    if reply:
-        history.append({"role": "assistant", "content": reply})
+    spoken_reply, text_reply = await llm_service.generate(text, history)
+    
+    if spoken_reply and text_reply:
+        history.append({"role": "assistant", "content": f"SPEAK: {spoken_reply}\nTEXT: {text_reply}"})
     else:
-        reply = "..."
+        spoken_reply, text_reply = "...", "..."
 
-    await websocket.send_json({"type": "assistant_text", "text": reply})
+    await websocket.send_json({"type": "assistant_text", "text": text_reply})
     if voice_key:
-        audio_bytes = await tts_service.synthesize(reply, personality=voice_key)
+        audio_bytes = await tts_service.synthesize(spoken_reply, personality=voice_key)
         await websocket.send_bytes(audio_bytes)
         await websocket.send_json({"type": "audio_complete"})
 

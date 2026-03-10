@@ -2,7 +2,7 @@ import { AudioCapture } from "./audioCapture.js";
 import { AudioPlayback } from "./audioPlayback.js";
 import { SocketClient } from "./socketClient.js";
 
-const WS_URL = "ws://localhost:8000/ws";
+const WS_URL = "ws://localhost:8003/ws";
 
 const conversationEl = document.getElementById("conversation");
 const transcriptionEl = document.getElementById("transcription");
@@ -68,7 +68,7 @@ function renderVoices() {
 
 async function fetchVoices() {
   try {
-    const response = await fetch("http://localhost:8000/api/voices");
+    const response = await fetch("http://localhost:8003/api/voices");
     const data = await response.json();
     availableVoices = data.voices ?? [];
     if (availableVoices.length > 0 && !activeVoiceId) {

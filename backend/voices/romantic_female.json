@@ -1,0 +1,13 @@
+{
+  "id": "romantic_female",
+  "label": "Romantic Female",
+  "engine": "piper",
+  "model_filename": "en_US-kathleen-low.onnx",
+  "description": "Soft, emotive tone suitable for warm or intimate responses.",
+  "synthesis": {
+    "length_scale": 1.08,
+    "noise_scale": 0.6,
+    "volume": 0.92
+  }
+}
+

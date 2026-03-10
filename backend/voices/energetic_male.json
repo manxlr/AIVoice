@@ -1,0 +1,13 @@
+{
+  "id": "energetic_male",
+  "label": "Energetic Male",
+  "engine": "piper",
+  "model_filename": "en_US-danny-low.onnx",
+  "description": "Upbeat, higher energy male delivery for lively prompts.",
+  "synthesis": {
+    "length_scale": 0.88,
+    "noise_scale": 0.65,
+    "volume": 1.12
+  }
+}
+

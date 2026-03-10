@@ -1,0 +1,89 @@
+:root {
+  color-scheme: dark;
+}
+
+body {
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+.message {
+  display: inline-block;
+  max-width: 85%;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  line-height: 1.4;
+}
+
+.message.user {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.9), rgba(168, 85, 247, 0.75));
+  align-self: flex-end;
+}
+
+.message.assistant {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.ptt-button {
+  box-shadow: 0 20px 45px rgba(168, 85, 247, 0.35);
+}
+
+.ptt-button.recording {
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.voice-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.voice-button {
+  width: 100%;
+  text-align: left;
+  padding: 0.85rem 1rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(15, 23, 42, 0.6);
+  color: rgba(226, 232, 240, 0.85);
+  transition: border 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.voice-button:hover {
+  border-color: rgba(192, 132, 252, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 25px rgba(126, 34, 206, 0.15);
+}
+
+.voice-button.active {
+  border-color: rgba(168, 85, 247, 0.9);
+  background: linear-gradient(
+    135deg,
+    rgba(168, 85, 247, 0.35),
+    rgba(126, 34, 206, 0.25)
+  );
+  color: #fff;
+  box-shadow: 0 16px 32px rgba(124, 58, 237, 0.22);
+}
+
+.voice-button span {
+  display: block;
+  font-size: 0.75rem;
+  color: rgba(148, 163, 184, 0.75);
+  margin-top: 0.25rem;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 20px 45px rgba(168, 85, 247, 0.35);
+  }
+  50% {
+    box-shadow: 0 20px 45px rgba(168, 85, 247, 0.6);
+  }
+  100% {
+    box-shadow: 0 20px 45px rgba(168, 85, 247, 0.35);
+  }
+}
+

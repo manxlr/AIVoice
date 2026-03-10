@@ -77,16 +77,12 @@
         </aside>
 
         <section class="flex-1 flex flex-col">
-          <!-- Status Bar -->
+          <!-- Header with Connection Indicator -->
           <div class="flex justify-between items-center mb-4">
             <h1 class="text-xl font-semibold text-slate-200">Local AI Assistant</h1>
-            <div class="text-right">
-              <p id="statusText" class="text-xs font-medium text-emerald-400">
-                Connecting...
-              </p>
-              <p id="transcription" class="text-xs text-slate-400 mt-1 max-w-xs truncate">
-                Transcript will appear here
-              </p>
+            <div class="flex items-center gap-2">
+              <div id="connectionIndicator" class="w-3 h-3 rounded-full bg-gray-500"></div>
+              <span class="text-xs text-slate-400">Ready</span>
             </div>
           </div>
           

@@ -151,8 +151,9 @@ body {
   margin: 1rem 0;
   border-radius: 0.5rem;
   overflow: hidden;
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(100, 116, 139, 0.3);
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(100, 116, 139, 0.4);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .message .code-header {
@@ -160,16 +161,19 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 1rem;
-  background: rgba(15, 23, 42, 0.9);
-  border-bottom: 1px solid rgba(100, 116, 139, 0.3);
+  background: rgba(15, 23, 42, 0.95);
+  border-bottom: 1px solid rgba(100, 116, 139, 0.4);
 }
 
 .message .code-lang {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #94a3b8;
+  color: #cbd5e1;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  background: rgba(100, 116, 139, 0.2);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
 }
 
 .message .copy-btn {
@@ -178,9 +182,16 @@ body {
   color: #94a3b8;
   cursor: pointer;
   font-size: 1rem;
-  padding: 0.25rem;
+  padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.message .copy-btn:focus {
+  outline: none;
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
 }
 
 .message .copy-btn:hover {
@@ -188,10 +199,81 @@ body {
   color: #e2e8f0;
 }
 
+.message .copy-btn:active {
+  transform: scale(0.95);
+  background: rgba(148, 163, 184, 0.3);
+}
+
 .message .code-block {
   margin: 0;
   padding: 1rem;
   overflow-x: auto;
+  background: rgba(15, 23, 42, 0.98);
+  position: relative;
+}
+
+/* Syntax highlighting for different languages */
+.message code.language-bash,
+.message code.language-shell,
+.message code.language-sh {
+  color: #9ef0ff;
+}
+
+.message code.language-perl {
+  color: #00bfff;
+}
+
+.message code.language-c,
+.message code.language-cpp {
+  color: #569cd6;
+}
+
+.message code.language-powershell {
+  color: #00bfff;
+}
+
+.message code.language-python {
+  color: #9cdcfe;
+}
+
+.message code.language-javascript,
+.message code.language-js {
+  color: #dcdcaa;
+}
+
+.message code.language-typescript,
+.message code.language-ts {
+  color: #4ec9b0;
+}
+
+.message code.language-html {
+  color: #d7ba7d;
+}
+
+.message code.language-css {
+  color: #d7ba7d;
+}
+
+.message code.language-sql {
+  color: #4ec9b0;
+}
+
+.message code.language-json {
+  color: #9cdcfe;
+}
+
+.message code.language-xml {
+  color: #808080;
+}
+
+.message code.language-yaml,
+.message code.language-yml {
+  color: #9cdcfe;
+}
+
+.message code.language-markdown,
+.message code.language-md {
+  color: #6a9955;
 }
 
 .message code {

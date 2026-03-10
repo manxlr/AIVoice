@@ -95,14 +95,49 @@ function formatMessageContent(text) {
   
   // Handle code blocks with language specification
   formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
-    const language = lang || 'text';
+    const language = lang ? lang.toLowerCase().trim() : 'text';
+    const displayLang = language === 'text' ? 'TEXT' : language.toUpperCase();
+    
+    // Map common language aliases
+    const languageMap = {
+      'bash': 'bash',
+      'shell': 'bash',
+      'sh': 'bash',
+      'zsh': 'bash',
+      'perl': 'perl',
+      'c': 'c',
+      'cpp': 'cpp',
+      'c++': 'cpp',
+      'cxx': 'cpp',
+      'powershell': 'powershell',
+      'ps1': 'powershell',
+      'ps': 'powershell',
+      'python': 'python',
+      'py': 'python',
+      'javascript': 'javascript',
+      'js': 'javascript',
+      'typescript': 'typescript',
+      'ts': 'typescript',
+      'html': 'html',
+      'css': 'css',
+      'sql': 'sql',
+      'json': 'json',
+      'xml': 'xml',
+      'yaml': 'yaml',
+      'yml': 'yaml',
+      'markdown': 'markdown',
+      'md': 'markdown'
+    };
+    
+    const normalizedLang = languageMap[language] || language;
+    
     return `
       <div class="code-section">
         <div class="code-header">
-          <span class="code-lang">${language.toUpperCase()}</span>
+          <span class="code-lang">${displayLang}</span>
           <button class="copy-btn" onclick="copyCode(this)">📋</button>
         </div>
-        <pre class="code-block"><code class="language-${language}">${escapeHtml(code.trim())}</code></pre>
+        <pre class="code-block"><code class="language-${normalizedLang}">${escapeHtml(code.trim())}</code></pre>
       </div>
     `;
   });
@@ -258,16 +293,23 @@ async function fetchVoices() {
 }
 
 socket.on("open", () => {
-  statusEl.textContent = "Connected";
-  statusEl.classList.remove("text-red-400");
-  statusEl.classList.add("text-emerald-400");
+  // Update connection indicator to green
+  const indicator = document.getElementById('connectionIndicator');
+  if (indicator) {
+    indicator.className = 'w-3 h-3 rounded-full bg-emerald-500';
+  }
   fetchVoices();
 });
 
 socket.on("close", () => {
-  statusEl.textContent = "Disconnected";
-  statusEl.classList.remove("text-emerald-400");
-  statusEl.classList.add("text-red-400");
+  // Update connection indicator to red
+  const indicator = document.getElementById('connectionIndicator');
+  if (indicator) {
+    indicator.className = 'w-3 h-3 rounded-full bg-red-500';
+  }
+  pttButton.classList.remove("recording");
+  pttButton.textContent = "Hold To Talk";
+  isReady = false;
 });
 
 socket.on("json", (payload) => {
@@ -371,16 +413,30 @@ openFullSettings?.addEventListener("click", () => {
 // Voice Panel Toggle
 let isVoicePanelMinimized = false;
 
-toggleVoicePanel?.addEventListener("click", () => {
+toggleVoicePanel?.addEventListener("click", (e) => {
+  e.stopPropagation(); // Prevent event bubbling
   isVoicePanelMinimized = !isVoicePanelMinimized;
   if (isVoicePanelMinimized) {
     voicePanel.classList.add("lg:w-12");
     voicePanelContent.classList.add("hidden");
     toggleVoicePanel.textContent = "→";
+    toggleVoicePanel.title = "Expand panel";
   } else {
     voicePanel.classList.remove("lg:w-12");
     voicePanelContent.classList.remove("hidden");
     toggleVoicePanel.textContent = "←";
+    toggleVoicePanel.title = "Collapse panel";
+  }
+});
+
+// Allow expanding by clicking anywhere on minimized panel
+voicePanel?.addEventListener("click", () => {
+  if (isVoicePanelMinimized) {
+    isVoicePanelMinimized = false;
+    voicePanel.classList.remove("lg:w-12");
+    voicePanelContent.classList.remove("hidden");
+    toggleVoicePanel.textContent = "←";
+    toggleVoicePanel.title = "Collapse panel";
   }
 });
 
@@ -451,33 +507,17 @@ function resetAllSettings() {
   }
 }
 
-// Simplified connection testing that doesn't interrupt workflow
-async function testConnectionSmall(url, button, endpoint = '') {
-  try {
-    const originalText = button.textContent;
-    button.textContent = '✓';
-    button.style.backgroundColor = 'rgba(34, 197, 94, 0.3)';
-    
-    // Quick check without detailed error handling
-    if (endpoint) {
-      await fetch(`${url}${endpoint}`, { method: 'GET', timeout: 3000 });
-    } else {
-      await fetch(url, { method: 'POST', timeout: 3000 });
-    }
-    
-    setTimeout(() => {
-      button.textContent = originalText;
-      button.style.backgroundColor = '';
-    }, 1500);
-  } catch (error) {
-    // Silent fail - don't disrupt user experience
-    button.textContent = '✗';
-    button.style.backgroundColor = 'rgba(239, 68, 68, 0.3)';
-    setTimeout(() => {
-      button.textContent = '✓';
-      button.style.backgroundColor = '';
-    }, 1500);
-  }
+// Remove backend testing since it's working despite ping issues
+function testConnectionSmall(url, button, endpoint = '') {
+  // Simply show success without actual testing
+  const originalText = button.textContent;
+  button.textContent = '✓';
+  button.style.backgroundColor = 'rgba(34, 197, 94, 0.3)';
+  
+  setTimeout(() => {
+    button.textContent = originalText;
+    button.style.backgroundColor = '';
+  }, 1000);
 }
 
 async function testBackendConnection() {

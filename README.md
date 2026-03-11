@@ -120,10 +120,10 @@ Ensure LM Studio is running and the API server is active on the configured port.
 
 ```bash
 cd backend
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn app.main:app --host 0.0.0.0 --port 8003 --reload
 ```
 
-The API will be available at `http://localhost:8000`. API documentation is available at `http://localhost:8000/docs`.
+The API will be available at `http://localhost:8003`. API documentation is available at `http://localhost:8003/docs`.
 
 ### Starting the Frontend
 
